@@ -5,144 +5,244 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXORA OS</title>
+
 <style>
 *{box-sizing:border-box}
+
 body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  color:white;
-  min-height:100vh;
-  overflow:hidden;
-  background:
-    linear-gradient(120deg,rgba(5,15,30,.2),rgba(5,15,30,.55)),
-    radial-gradient(ellipse at 70% 20%,#547b91,transparent 45%),
-    linear-gradient(145deg,#172d45,#45677a 50%,#101c30);
+ margin:0;
+ font-family:Arial,sans-serif;
+ color:white;
+ background:#101d30;
+ overflow:hidden;
 }
-.desktop{padding:35px}
-.logo{font-size:20px;font-weight:700;letter-spacing:5px}
-.clock{position:absolute;top:30%;left:8%}
-.time{font-size:clamp(65px,12vw,125px);font-weight:200;letter-spacing:-5px}
-.date{font-size:19px;color:#d5e2ed;margin-top:5px}
-.welcome{font-size:15px;color:#d5e2ed;margin-top:30px}
+
+button{font:inherit;cursor:pointer;color:white}
+
+#lock,#desktop{
+ position:fixed;
+ inset:0;
+ background:
+ radial-gradient(ellipse at 75% 20%,#7898a7 0%,transparent 40%),
+ linear-gradient(145deg,#152b42,#42677b 50%,#101c30);
+}
+
+#lock{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ transition:opacity .5s;
+}
+
+.brand{
+ position:absolute;
+ top:35px;
+ left:35px;
+ font-size:21px;
+ font-weight:bold;
+ letter-spacing:7px;
+}
+
+.clock{
+ font-size:clamp(85px,17vw,145px);
+ font-weight:200;
+ letter-spacing:-7px;
+}
+
+.date{
+ font-size:19px;
+ color:#e0eaf1;
+ margin-top:5px;
+}
+
+.unlock{
+ margin-top:60px;
+ padding:15px 35px;
+ border:1px solid #ffffff70;
+ border-radius:30px;
+ background:#ffffff20;
+ backdrop-filter:blur(20px);
+}
+
+.unlock:hover{background:#ffffff40}
+
+#desktop{
+ display:none;
+ padding:35px;
+}
+
+#desktop.show{display:block}
+
+.desktop-brand{
+ font-size:22px;
+ font-weight:bold;
+ letter-spacing:6px;
+}
+
+.welcome{
+ position:absolute;
+ top:34%;
+ left:8%;
+}
+
+.welcome h1{
+ font-size:clamp(35px,7vw,75px);
+ font-weight:300;
+ margin-bottom:10px;
+}
+
+.welcome p{color:#dce8f1}
+
 .taskbar{
- position:absolute;bottom:15px;left:50%;
+ position:absolute;
+ bottom:18px;
+ left:50%;
  transform:translateX(-50%);
- display:flex;align-items:center;gap:10px;
- padding:10px 15px;border:1px solid #ffffff35;
- background:#152438a8;backdrop-filter:blur(25px);
+ display:flex;
+ gap:12px;
+ padding:12px;
+ border:1px solid #ffffff40;
  border-radius:20px;
-}
-.taskbar button,.app{
- border:0;color:white;background:#ffffff16;
- border-radius:13px;padding:12px;font-size:20px;
- cursor:pointer;
-}
-.taskbar button:hover,.app:hover{background:#ffffff35}
-.panel{
- display:none;position:absolute;bottom:85px;left:50%;
- transform:translateX(-50%);
- width:min(340px,90vw);padding:20px;
- border:1px solid #ffffff35;
- border-radius:22px;background:#14253beF;
+ background:#14253bc9;
  backdrop-filter:blur(25px);
 }
-.panel.show{display:block}
-.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.app{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px}
-.app span{font-size:27px}
+
+.taskbar button{
+ border:0;
+ border-radius:12px;
+ background:#ffffff18;
+ padding:12px;
+ font-size:23px;
+}
+
+.taskbar button:hover{background:#ffffff40}
+
 .window{
- display:none;position:absolute;top:15%;left:50%;
+ display:none;
+ position:absolute;
+ top:20%;
+ left:50%;
  transform:translateX(-50%);
- width:min(520px,92vw);min-height:230px;
- border:1px solid #ffffff45;border-radius:18px;
- background:#14253bf2;backdrop-filter:blur(25px);
+ width:min(450px,90vw);
+ min-height:220px;
+ padding:20px;
+ border:1px solid #ffffff50;
+ border-radius:20px;
+ background:#14253bf2;
+ backdrop-filter:blur(25px);
  box-shadow:0 20px 80px #0008;
 }
+
 .window.show{display:block}
-.winhead{padding:17px;border-bottom:1px solid #ffffff25;
- display:flex;justify-content:space-between;font-weight:bold}
-.close{border:0;background:none;color:white;font-size:20px;cursor:pointer}
-.content{padding:22px;line-height:1.7;color:#e0eaf3}
-.content button{padding:10px 15px;border:0;border-radius:9px;cursor:pointer}
-@media(max-width:500px){.clock{top:28%;left:7%}.desktop{padding:22px}}
+
+.window-header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ border-bottom:1px solid #ffffff30;
+ padding-bottom:12px;
+}
+
+.window-header button{
+ background:none;
+ border:0;
+ font-size:22px;
+}
+
+.window-content{
+ padding:15px 0;
+ line-height:1.7;
+ color:#e0eaf3;
+}
+
+@media(max-width:500px){
+ #desktop{padding:22px}
+ .brand{left:22px}
+ .welcome{left:7%}
+}
 </style>
 </head>
-<body>
-<div class="desktop">
- <div class="logo">NEXORA</div>
- <div class="clock">
-  <div class="time" id="time">00:00</div>
-  <div class="date" id="date"></div>
-  <div class="welcome">Добро пожаловать в NEXORA OS</div>
- </div>
-</div>
 
-<div class="panel" id="menu">
- <h2>Приложения</h2>
- <div class="apps">
-  <button class="app" onclick="openApp('files')"><span>📁</span>Файлы</button>
-  <button class="app" onclick="openApp('browser')"><span>🌐</span>Браузер</button>
-  <button class="app" onclick="openApp('music')"><span>🎵</span>Музыка</button>
-  <button class="app" onclick="openApp('settings')"><span>⚙️</span>Настройки</button>
-  <button class="app" onclick="openApp('store')"><span>🛍️</span>Магазин</button>
-  <button class="app" onclick="openApp('security')"><span>🛡️</span>Безопасность</button>
+<body>
+
+<section id="lock">
+ <div class="brand">NEXORA</div>
+ <div class="clock" id="clock">00:00</div>
+ <div class="date" id="date"></div>
+ <button class="unlock" onclick="unlock()">
+  Разблокировать →
+ </button>
+</section>
+
+<section id="desktop">
+ <div class="desktop-brand">NEXORA</div>
+
+ <div class="welcome">
+  <h1>Добро пожаловать.</h1>
+  <p>NEXORA OS 0.2</p>
  </div>
-</div>
+
+ <div class="taskbar">
+  <button onclick="openApp('Файлы','Файловый менеджер NEXORA')">📁</button>
+  <button onclick="openApp('Браузер','NEXORA Browser')">🌐</button>
+  <button onclick="openApp('Настройки','Настройки системы')">⚙️</button>
+  <button onclick="openApp('Музыка','NEXORA Music')">🎵</button>
+  <button onclick="lock()">🔒</button>
+ </div>
+</section>
 
 <div class="window" id="window">
- <div class="winhead">
-  <span id="title">Приложение</span>
-  <button class="close" onclick="closeApp()">✕</button>
+ <div class="window-header">
+  <strong id="title">Приложение</strong>
+  <button onclick="closeApp()">✕</button>
  </div>
- <div class="content" id="content"></div>
-</div>
-
-<div class="taskbar">
- <button onclick="toggleMenu()">◈</button>
- <button onclick="openApp('files')">📁</button>
- <button onclick="openApp('browser')">🌐</button>
- <button onclick="openApp('settings')">⚙️</button>
+ <div class="window-content" id="content"></div>
 </div>
 
 <script>
-const names={
- files:"NEXORA Files",
- browser:"NEXORA Browser",
- music:"NEXORA Music",
- settings:"NEXORA Settings",
- store:"NEXORA Store",
- security:"NEXORA Security"
-};
-const descriptions={
- files:"Файловый менеджер<br><br>Здесь будет управление файлами.",
- browser:"Интернет-браузер<br><br>Здесь появится собственный браузер.",
- music:"Музыкальный проигрыватель<br><br>Здесь будет музыкальная библиотека.",
- settings:"Настройки системы<br><br>Версия: NEXORA OS 0.1<br>Язык: Русский<br>Тема: Тёмная",
- store:"Магазин приложений<br><br>Здесь будет каталог программ.",
- security:"Безопасность<br><br>Центр управления безопасностью системы."
-};
 function updateClock(){
  const now=new Date();
- document.getElementById("time").textContent=
- now.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+
+ document.getElementById("clock").textContent=
+ now.toLocaleTimeString("ru-RU",{
+  hour:"2-digit",
+  minute:"2-digit"
+ });
+
  document.getElementById("date").textContent=
- now.toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"long"});
+ now.toLocaleDateString("ru-RU",{
+  weekday:"long",
+  day:"numeric",
+  month:"long"
+ });
 }
+
 updateClock();
 setInterval(updateClock,1000);
 
-function toggleMenu(){
- document.getElementById("menu").classList.toggle("show");
+function unlock(){
+ document.getElementById("lock").style.display="none";
+ document.getElementById("desktop").classList.add("show");
 }
-function openApp(app){
- document.getElementById("menu").classList.remove("show");
- document.getElementById("title").textContent=names[app];
- document.getElementById("content").innerHTML=descriptions[app];
+
+function lock(){
+ closeApp();
+ document.getElementById("desktop").classList.remove("show");
+ document.getElementById("lock").style.display="flex";
+}
+
+function openApp(title,content){
+ document.getElementById("title").textContent=title;
+ document.getElementById("content").textContent=content;
  document.getElementById("window").classList.add("show");
 }
+
 function closeApp(){
  document.getElementById("window").classList.remove("show");
 }
 </script>
+
 </body>
 </html>
