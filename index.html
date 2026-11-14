@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA OS</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:white;
+  min-height:100vh;
+  overflow:hidden;
+  background:
+    linear-gradient(120deg,rgba(5,15,30,.2),rgba(5,15,30,.55)),
+    radial-gradient(ellipse at 70% 20%,#547b91,transparent 45%),
+    linear-gradient(145deg,#172d45,#45677a 50%,#101c30);
+}
+.desktop{padding:35px}
+.logo{font-size:20px;font-weight:700;letter-spacing:5px}
+.clock{position:absolute;top:30%;left:8%}
+.time{font-size:clamp(65px,12vw,125px);font-weight:200;letter-spacing:-5px}
+.date{font-size:19px;color:#d5e2ed;margin-top:5px}
+.welcome{font-size:15px;color:#d5e2ed;margin-top:30px}
+.taskbar{
+ position:absolute;bottom:15px;left:50%;
+ transform:translateX(-50%);
+ display:flex;align-items:center;gap:10px;
+ padding:10px 15px;border:1px solid #ffffff35;
+ background:#152438a8;backdrop-filter:blur(25px);
+ border-radius:20px;
+}
+.taskbar button,.app{
+ border:0;color:white;background:#ffffff16;
+ border-radius:13px;padding:12px;font-size:20px;
+ cursor:pointer;
+}
+.taskbar button:hover,.app:hover{background:#ffffff35}
+.panel{
+ display:none;position:absolute;bottom:85px;left:50%;
+ transform:translateX(-50%);
+ width:min(340px,90vw);padding:20px;
+ border:1px solid #ffffff35;
+ border-radius:22px;background:#14253beF;
+ backdrop-filter:blur(25px);
+}
+.panel.show{display:block}
+.apps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.app{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px}
+.app span{font-size:27px}
+.window{
+ display:none;position:absolute;top:15%;left:50%;
+ transform:translateX(-50%);
+ width:min(520px,92vw);min-height:230px;
+ border:1px solid #ffffff45;border-radius:18px;
+ background:#14253bf2;backdrop-filter:blur(25px);
+ box-shadow:0 20px 80px #0008;
+}
+.window.show{display:block}
+.winhead{padding:17px;border-bottom:1px solid #ffffff25;
+ display:flex;justify-content:space-between;font-weight:bold}
+.close{border:0;background:none;color:white;font-size:20px;cursor:pointer}
+.content{padding:22px;line-height:1.7;color:#e0eaf3}
+.content button{padding:10px 15px;border:0;border-radius:9px;cursor:pointer}
+@media(max-width:500px){.clock{top:28%;left:7%}.desktop{padding:22px}}
+</style>
+</head>
+<body>
+<div class="desktop">
+ <div class="logo">NEXORA</div>
+ <div class="clock">
+  <div class="time" id="time">00:00</div>
+  <div class="date" id="date"></div>
+  <div class="welcome">Добро пожаловать в NEXORA OS</div>
+ </div>
+</div>
+
+<div class="panel" id="menu">
+ <h2>Приложения</h2>
+ <div class="apps">
+  <button class="app" onclick="openApp('files')"><span>📁</span>Файлы</button>
+  <button class="app" onclick="openApp('browser')"><span>🌐</span>Браузер</button>
+  <button class="app" onclick="openApp('music')"><span>🎵</span>Музыка</button>
+  <button class="app" onclick="openApp('settings')"><span>⚙️</span>Настройки</button>
+  <button class="app" onclick="openApp('store')"><span>🛍️</span>Магазин</button>
+  <button class="app" onclick="openApp('security')"><span>🛡️</span>Безопасность</button>
+ </div>
+</div>
+
+<div class="window" id="window">
+ <div class="winhead">
+  <span id="title">Приложение</span>
+  <button class="close" onclick="closeApp()">✕</button>
+ </div>
+ <div class="content" id="content"></div>
+</div>
+
+<div class="taskbar">
+ <button onclick="toggleMenu()">◈</button>
+ <button onclick="openApp('files')">📁</button>
+ <button onclick="openApp('browser')">🌐</button>
+ <button onclick="openApp('settings')">⚙️</button>
+</div>
+
+<script>
+const names={
+ files:"NEXORA Files",
+ browser:"NEXORA Browser",
+ music:"NEXORA Music",
+ settings:"NEXORA Settings",
+ store:"NEXORA Store",
+ security:"NEXORA Security"
+};
+const descriptions={
+ files:"Файловый менеджер<br><br>Здесь будет управление файлами.",
+ browser:"Интернет-браузер<br><br>Здесь появится собственный браузер.",
+ music:"Музыкальный проигрыватель<br><br>Здесь будет музыкальная библиотека.",
+ settings:"Настройки системы<br><br>Версия: NEXORA OS 0.1<br>Язык: Русский<br>Тема: Тёмная",
+ store:"Магазин приложений<br><br>Здесь будет каталог программ.",
+ security:"Безопасность<br><br>Центр управления безопасностью системы."
+};
+function updateClock(){
+ const now=new Date();
+ document.getElementById("time").textContent=
+ now.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});
+ document.getElementById("date").textContent=
+ now.toLocaleDateString("ru-RU",{weekday:"long",day:"numeric",month:"long"});
+}
+updateClock();
+setInterval(updateClock,1000);
+
+function toggleMenu(){
+ document.getElementById("menu").classList.toggle("show");
+}
+function openApp(app){
+ document.getElementById("menu").classList.remove("show");
+ document.getElementById("title").textContent=names[app];
+ document.getElementById("content").innerHTML=descriptions[app];
+ document.getElementById("window").classList.add("show");
+}
+function closeApp(){
+ document.getElementById("window").classList.remove("show");
+}
+</script>
+</body>
+</html>
